@@ -7,7 +7,7 @@ console.log("Logs from your program will appear here!");
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", (data: Buffer) => {
-    const req = data.toString().trim().split("\n");
+    const req = data.toString().trim().split("\\n");
     const nn = req.filter((ar) => ar.includes("ping"));
 
     nn.map((ele) => connection.write("+PONG\r\n"));
