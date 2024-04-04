@@ -5,9 +5,11 @@ import { argv } from "node:process";
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 // console.log("Logs from your program will appear here!");
 // const args = argv.slice(2);
+console.log(argv);
 const PORT = argv[3] ? Number(argv[3]) : 6379;
 const map = {};
 const timemap = {};
+let serverType = "master";
 
 // Uncomment this block to pass the first stage
 const server: net.Server = net.createServer((connection: net.Socket) => {
@@ -58,7 +60,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       connection.write(`$-1\r\n`);
     }
 
-    if (parsedReq[0].toLowerCase() === "info") {
+    if (parsedReq[0] === "INFO") {
       connection.write(`$11\r\nrole:master\r\n`);
       return;
     }
