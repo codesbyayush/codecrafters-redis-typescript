@@ -1,9 +1,11 @@
 import * as net from "node:net";
 import { RESP2parser } from "./respParser.ts";
+import { argv } from "process";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
-console.log("Logs from your program will appear here!");
-
+// console.log("Logs from your program will appear here!");
+const args = argv.slice(2);
+const PORT = args[4] ? Number(args[4]) : 6379;
 const map = {};
 const timemap = {};
 
@@ -57,4 +59,4 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
   });
 });
-server.listen(6379, "127.0.0.1");
+server.listen(PORT, "127.0.0.1");
