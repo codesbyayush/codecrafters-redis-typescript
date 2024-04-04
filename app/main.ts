@@ -63,7 +63,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     if (parsedReq[0] === "INFO") {
       switch (parsedReq[1]) {
         case "replication":
-          master
+          master === undefined
             ? connection.write(`$11\r\nrole:master\r\n`)
             : connection.write(`$10\r\nrole:slave\r\n`);
       }
