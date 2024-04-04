@@ -42,17 +42,17 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         return;
       }
       if (!timemap[parsedReq[1]]) {
-        console.log(map[parsedReq[1]]);
+        console.log(2, map[parsedReq[1]]);
         connection.write(`+${map[parsedReq[1]]}\r\n`);
         return;
       }
       if (timemap[parsedReq[1]] >= Date.now()) {
-        console.log(map[parsedReq[1]]);
+        console.log(3, map[parsedReq[1]]);
 
         connection.write(`+${map[parsedReq[1]]}\r\n`);
         return;
       }
-      console.log(map[parsedReq[1]]);
+      console.log(4, map[parsedReq[1]]);
 
       delete timemap[parsedReq[1]];
       connection.write(`$-1\r\n`);
