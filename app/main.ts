@@ -29,7 +29,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
-        expTime += parsedReq[4];
+        expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
       connection.write(`+OK\r\n`);
