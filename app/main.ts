@@ -9,7 +9,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   connection.on("data", (data: Buffer) => {
     const req = data.toString().trim().split("\\n");
     const nn = req.filter((ar) => ar.includes("ping"));
-
+    console.log(nn);
     nn.map((ele) => connection.write("+PONG\r\n"));
     connection.end();
   });
