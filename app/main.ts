@@ -5,11 +5,11 @@ import { argv } from "node:process";
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 // console.log("Logs from your program will appear here!");
 // const args = argv.slice(2);
-console.log(argv);
 const PORT = argv[3] ? Number(argv[3]) : 6379;
 const map = {};
 const timemap = {};
-let serverType = "master";
+let master: number | undefined = undefined;
+if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 
 // Uncomment this block to pass the first stage
 const server: net.Server = net.createServer((connection: net.Socket) => {
@@ -61,7 +61,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq[0] === "INFO") {
-      connection.write(`$11\r\nrole:master\r\n`);
+      switch (parsedReq[1]) {
+        case "replication":
+          master
+            ? connection.write(`$11\r\nrole:master\r\n`)
+            : connection.write(`$11\r\nrole:slave\r\n`);
+      }
       return;
     }
   });
