@@ -1,5 +1,5 @@
 import * as net from "node:net";
-import { RESP2parser } from "../respParser";
+import { RESP2parser } from "./respParser.ts";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
