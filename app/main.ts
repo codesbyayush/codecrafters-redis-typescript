@@ -28,7 +28,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     if (parsedReq[0] === "set") {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
-        let expTime = Date.now();
+        let expTime = Number(Date.now());
         expTime += parsedReq[4];
         timemap[parsedReq[1]] = expTime;
       }
