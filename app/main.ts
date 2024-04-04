@@ -65,7 +65,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         case "replication":
           master
             ? connection.write(`$11\r\nrole:master\r\n`)
-            : connection.write(`$11\r\nrole:slave\r\n`);
+            : connection.write(`$10\r\nrole:slave\r\n`);
       }
       return;
     }
