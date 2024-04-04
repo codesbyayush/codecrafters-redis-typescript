@@ -58,7 +58,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       connection.write(`$-1\r\n`);
     }
 
-    if (parsedReq[2] === "info") {
+    if (parsedReq[0].toLowerCase() === "info") {
       connection.write(`$11\r\nrole:master\r\n`);
       return;
     }
