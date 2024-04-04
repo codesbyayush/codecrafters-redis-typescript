@@ -64,8 +64,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       switch (parsedReq[1]) {
         case "replication":
           master === undefined
-            ? connection.write(`$11\r\nrole:master\r\n`)
-            : connection.write(`$10\r\nrole:slave\r\n`);
+            ? connection.write(
+                `$85\r\nrole:master\r\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\r\nmaster_repl_offset:0`
+              )
+            : connection.write(
+                `$84\r\nrole:slave\r\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\r\nmaster_repl_offset:0`
+              );
       }
       return;
     }
