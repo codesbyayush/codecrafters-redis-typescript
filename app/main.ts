@@ -32,7 +32,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     if (parsedReq[0] === "get") {
       if (map[parsedReq[1]]) {
-        connection.write(parsedReq[1]);
+        connection.write(map[parsedReq[1]]);
         return;
       }
       connection.write(`$-1\r\n`);
