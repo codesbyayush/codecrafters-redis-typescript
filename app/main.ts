@@ -8,6 +8,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", (data: Buffer) => {
     const req = data.toString().trim();
+    console.log(req);
     if (req === "*1\r\n$4\r\nping\r\n") {
       connection.write("+PONG\r\n");
     }
