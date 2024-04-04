@@ -11,6 +11,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     console.log(req);
     if (req.includes("ping")) {
       connection.write("+PONG\r\n");
+      connection.write("+PONG\r\n");
     }
     connection.end();
   });
