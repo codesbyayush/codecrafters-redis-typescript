@@ -57,6 +57,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       delete timemap[parsedReq[1]];
       connection.write(`$-1\r\n`);
     }
+
+    if (parsedReq[2] === "info") {
+      connection.write(`$11\r\nrole:master\r\n`);
+      return;
+    }
   });
 });
 
