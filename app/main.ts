@@ -9,13 +9,17 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", async (data: Buffer) => {
     const req = data.toString();
+
     const parsedReq = RESP2parser(req.split("\r\n"));
-    if (req.includes("ping")) connection.write("+PONG\r\n");
-    else if (parsedReq[0] === "echo")
-      parsedReq.forEach((reqs) => {
-        if (reqs !== "echo") connection.write(reqs);
-      });
-    // connection.end();
+
+    if (parsedReq[0] === "ping") {
+      connection.write("+PONG\r\n");
+      return;
+    }
+
+    if (parsedReq[0] === "echo") {
+      connection.write(`$${parsedReq[1].length}\r\n${parsedReq[1]}\r\n`);
+    }
   });
 });
 server.listen(6379, "127.0.0.1");
