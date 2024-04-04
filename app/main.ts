@@ -8,11 +8,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", async (data: Buffer) => {
     const req = data.toString();
-    // console.log(req);
-    // .trim().split("\\n");
-    // const nn = req.filter((ar) => ar.includes("ping"));
-    // console.log(nn);
-    // nn.map((ele) => connection.write("+PONG\r\n"));
     connection.write("+PONG\r\n");
     // connection.end();
   });
