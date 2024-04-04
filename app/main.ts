@@ -4,6 +4,8 @@ import { RESP2parser } from "./respParser.ts";
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.log("Logs from your program will appear here!");
 
+const map = {};
+
 // Uncomment this block to pass the first stage
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
@@ -19,6 +21,22 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     if (parsedReq[0] === "echo") {
       connection.write(`$${parsedReq[1].length}\r\n${parsedReq[1]}\r\n`);
+      return;
+    }
+
+    if (parsedReq[0] === "set") {
+      map[parsedReq[1]] = parsedReq[2];
+      connection.write(`+OK\r\n`);
+      return;
+    }
+
+    if (parsedReq[0] === "get") {
+      if (map[parsedReq[1]]) {
+        connection.write(parsedReq[1]);
+        return;
+      }
+      connection.write(`$-1\r\n`);
+      return;
     }
   });
 });
