@@ -11,7 +11,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     const req = data.toString();
     const parsedReq = RESP2parser(req.split("\r\n"));
     if (req.includes("ping")) connection.write("+PONG\r\n");
-    if (parsedReq[0] === "echo")
+    else if (parsedReq[0] === "echo")
       parsedReq.map((reqs) => {
         if (reqs !== "echo") connection.write(reqs);
       });
