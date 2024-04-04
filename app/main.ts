@@ -65,10 +65,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         case "replication":
           master === undefined
             ? connection.write(
-                `$85\r\nrole:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n`
+                `$87\r\nrole:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n`
               )
             : connection.write(
-                `$84\r\nrole:slave\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n`
+                `$86\r\nrole:slave\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n`
               );
       }
       return;
