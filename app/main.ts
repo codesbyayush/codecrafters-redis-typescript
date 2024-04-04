@@ -37,16 +37,19 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq[0] === "get") {
-      if (
-        map[parsedReq[1]] &&
-        timemap[parsedReq[1]] &&
-        timemap[parsedReq[1]] >= Date.now()
-      ) {
+      if (!map[parsedReq[1]]) {
+        connection.write(`$-1\r\n`);
+        return;
+      }
+      if (!timemap[parsedReq[1]]) {
         connection.write(`+${map[parsedReq[1]]}\r\n`);
         return;
       }
-      if (timemap[parsedReq[1]] && timemap[parsedReq[1]] < Date.now())
-        delete timemap[parsedReq[1]];
+      if (timemap[parsedReq[1]] >= Date.now()) {
+        connection.write(`+${map[parsedReq[1]]}\r\n`);
+        return;
+      }
+      delete timemap[parsedReq[1]];
       connection.write(`$-1\r\n`);
       return;
     }
