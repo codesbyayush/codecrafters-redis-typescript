@@ -4,8 +4,8 @@ import { argv } from "node:process";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 // console.log("Logs from your program will appear here!");
-const args = argv.slice(2);
-const PORT = args[4] ? Number(args[4]) : 6379;
+// const args = argv.slice(2);
+const PORT = argv[4] ? Number(argv[4]) : 6379;
 const map = {};
 const timemap = {};
 
