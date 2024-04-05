@@ -13,8 +13,7 @@ let master: number | undefined = undefined;
 if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 
 const PING = `*1\r\n$4\r\nping\r\n`;
-const REPLCONF = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n
-`;
+const REPLCONF = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n`;
 const REPLCONFCapa = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`;
 
 if (master !== undefined) {
@@ -23,6 +22,7 @@ if (master !== undefined) {
     masterConn.write(PING);
     step++;
     console.log("connected to master at", master);
+    return;
   });
 
   const handshake = [PING, REPLCONF, REPLCONFCapa];
@@ -34,6 +34,7 @@ if (master !== undefined) {
 
     if (parsedReq === "PONG") {
       masterConn.write(handshake[step++]);
+      return;
     }
 
     if (step < 3 && parsedReq === "OK") {
