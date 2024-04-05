@@ -112,7 +112,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         timemap[parsedReq[1]] = expTime;
       }
       connection.write(`+OK\r\n`);
-      connection.emit("data", data);
       return;
     }
 
