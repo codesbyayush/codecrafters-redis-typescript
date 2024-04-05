@@ -12,6 +12,13 @@ const timemap = {};
 let master: number | undefined = undefined;
 if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 
+if (master !== undefined) {
+  const masterConn = net.createConnection(master, "localhost");
+  masterConn.on("connect", (socket) => {
+    socket.write("*1\r\n$4\r\nping\r\n");
+  });
+}
+
 // Uncomment this block to pass the first stage
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
@@ -75,13 +82,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
   });
-
-  if (master !== undefined) {
-    const masterConn = net.createConnection(master, "http://localhost");
-    masterConn.on("connect", (socket) => {
-      socket.write("*1\r\n$4\r\nping\r\n");
-    });
-  }
 });
 
 server.listen(PORT, "127.0.0.1");
