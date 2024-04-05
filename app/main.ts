@@ -78,7 +78,7 @@ if (master !== undefined) {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
-  connection.on("data", async (data: Buffer) => {
+  connection.on("data", (data: Buffer) => {
     const req = data.toString().toLowerCase();
 
     if ([REPLCONF.toLowerCase(), REPLCONFCapa.toLowerCase()].includes(req)) {
