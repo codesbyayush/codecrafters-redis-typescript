@@ -71,6 +71,7 @@ if (master !== undefined) {
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
+      masterConn.write("Got the request");
       return;
     }
   });
