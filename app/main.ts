@@ -39,6 +39,7 @@ if (master !== undefined) {
     if (step < 3 && parsedReq === "OK") {
       console.log(REPLCONFCapa);
       masterConn.write(REPLCONFCapa);
+      step++;
     }
   });
 }
