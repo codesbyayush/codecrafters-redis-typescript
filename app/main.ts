@@ -15,7 +15,7 @@ if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 const PING = `*1\r\n$4\r\nping\r\n`;
 const REPLCONF = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n
 `;
-const REPLCONFCapa = "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n";
+const REPLCONFCapa = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`;
 
 if (master !== undefined) {
   let step = 0;
@@ -54,7 +54,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     const req = data.toString();
 
     if (req === REPLCONF || req === REPLCONFCapa) {
-      // console.log("reached here");
+      console.log("reached here");
       connection.write("+OK\r\n");
       return;
     }
