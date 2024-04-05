@@ -5,6 +5,7 @@ import { argv } from "node:process";
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 // console.log("Logs from your program will appear here!");
 // const args = argv.slice(2);
+
 const PORT = argv[3] ? Number(argv[3]) : 6379;
 const map = {};
 const timemap = {};
@@ -74,6 +75,13 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
   });
+
+  if (master !== undefined) {
+    const masterConn = net.createConnection(master, "localhost");
+    masterConn.on("connect", (socket) => {
+      socket.write("*1\r\n$4\r\nping\r\n");
+    });
+  }
 });
 
 server.listen(PORT, "127.0.0.1");
