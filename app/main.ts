@@ -36,7 +36,7 @@ const sendEmptyRDBFile = () => {
 
 const forwardToReplicas = (data: Buffer, con: net.Socket) => {
   replicas.map((connection) => {
-    connection !== con && connection.write(data);
+    connection !== con && connection.write(data.toString());
   });
 };
 
