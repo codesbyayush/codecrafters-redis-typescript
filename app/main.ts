@@ -59,6 +59,16 @@ if (master !== undefined) {
       step++;
       return;
     }
+
+    if (parsedReq[0].toLowerCase() === "set") {
+      map[parsedReq[1]] = parsedReq[2];
+      if (parsedReq.length > 3 && parsedReq[3] === "px") {
+        let expTime = Number(Date.now());
+        expTime += Number(parsedReq[4]);
+        timemap[parsedReq[1]] = expTime;
+      }
+      return;
+    }
   });
 }
 
@@ -89,12 +99,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    if (parsedReq[0] === "echo") {
+    if (parsedReq[0].toLowerCase() === "echo") {
       connection.write(`$${parsedReq[1].length}\r\n${parsedReq[1]}\r\n`);
       return;
     }
 
-    if (parsedReq[0] === "set") {
+    if (parsedReq[0].toLowerCase() === "set") {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
@@ -102,10 +112,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         timemap[parsedReq[1]] = expTime;
       }
       connection.write(`+OK\r\n`);
+      connection.emit("data", data);
       return;
     }
 
-    if (parsedReq[0] === "get") {
+    if (parsedReq[0].toLowerCase() === "get") {
       if (!map[parsedReq[1]]) {
         connection.write(`$-1\r\n`);
         return;
@@ -125,7 +136,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       connection.write(`$-1\r\n`);
     }
 
-    if (parsedReq[0] === "INFO") {
+    if (parsedReq[0].toLowerCase() === "info") {
       switch (parsedReq[1]) {
         case "replication":
           master === undefined
