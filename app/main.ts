@@ -27,6 +27,14 @@ const EMPTYRDBFILE_BASE64 =
 
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 
+const sendEmptyRDBFile = () => {
+  const body = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
+  const len = body.length;
+  const head = Buffer.from(`$${len}\r\n`);
+  return Buffer.concat([head, body]);
+  1;
+};
+
 if (master !== undefined) {
   let step = 0;
   const masterConn = net.createConnection(master, "localhost", () => {
@@ -69,9 +77,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       // const rdbbuffer = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
       // const len = rdbbuffer.length;
       // const start = Buffer.concat([Buffer.from(`${len}\r\n`), rdbbuffer]);
-      connection.write(
-        `$${EMPTYRDBFILE_BASE64.length}\r\n${EMPTYRDBFILE_BASE64}`
-      );
+      connection.write(sendEmptyRDBFile());
 
       return;
     }
