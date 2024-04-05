@@ -105,7 +105,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     if (parsedReq.includes("set")) {
       console.log("set req in master", Date.now());
-      forwardToReplicas(data);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
@@ -113,6 +112,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         timemap[parsedReq[1]] = expTime;
       }
       connection.write(`+OK\r\n`);
+      forwardToReplicas(data);
       return;
     }
 
