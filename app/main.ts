@@ -77,7 +77,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   });
 
   if (master !== undefined) {
-    const masterConn = net.createConnection(master, "localhost");
+    const masterConn = net.createConnection(master, "http://localhost");
     masterConn.on("connect", (socket) => {
       socket.write("*1\r\n$4\r\nping\r\n");
     });
