@@ -40,6 +40,7 @@ if (master !== undefined) {
       console.log(REPLCONFCapa);
       masterConn.write(REPLCONFCapa);
       step++;
+      masterConn.end();
     }
   });
 }
