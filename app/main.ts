@@ -36,8 +36,10 @@ if (master !== undefined) {
       masterConn.write(handshake[step++]);
     }
     if (step < 3 && parsedReq === "OK") {
-      masterConn.write(handshake[step++]);
-      console.log(step);
+      masterConn.write(
+        `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`
+      );
+      console.log(step++);
     }
   });
 }
