@@ -20,11 +20,10 @@ const PSYNC = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`;
 const MASTERREPLID = `8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb`;
 const MASTERREPLOFFSET = 0;
 
-const EMPTYRDBFILE_BASE64 = `UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==`;
+const EMPTYRDBFILE_BASE64 =
+  "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
 
-const EMPTYRDBFILE_BINARY =
-  parseInt(EMPTYRDBFILE_BASE64, 64).toString(2) +
-  parseInt("0xFF", 16).toString(2);
+// const EMPTYRDBFILE_BINARY = parseInt(EMPTYRDBFILE_BASE64, 64).toString(2);
 
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 
@@ -67,7 +66,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     if (PSYNC === req) {
       connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
       connection.write(
-        `$${EMPTYRDBFILE_BINARY.length}\r\n${EMPTYRDBFILE_BINARY}`
+        Buffer.from(`$${EMPTYRDBFILE_BASE64.length}\r\n${EMPTYRDBFILE_BASE64}`)
       );
       return;
     }
