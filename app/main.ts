@@ -116,6 +116,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq.includes("get")) {
+      console.log("get req", Date.now());
+
       if (!map[parsedReq[1]]) {
         connection.write(`$-1\r\n`);
         return;
