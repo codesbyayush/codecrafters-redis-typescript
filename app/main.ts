@@ -52,12 +52,12 @@ if (master !== undefined) {
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
-    if (parsedReq === "PONG") {
+    if (parsedReq.includes("PONG")) {
       masterConn.write(handshake[step++]);
       return;
     }
 
-    if (step < 3 && parsedReq === "OK") {
+    if (step < 3 && parsedReq.includes("OK")) {
       masterConn.write(handshake[step]);
       step++;
       return;
