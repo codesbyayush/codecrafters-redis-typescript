@@ -51,7 +51,6 @@ if (master !== undefined) {
     const req = data.toString().toLowerCase();
 
     const parsedReq = RESP2parser(req.split("\r\n"));
-    console.log(parsedReq);
 
     if (parsedReq.includes("pong")) {
       masterConn.write(handshake[step++]);
@@ -65,7 +64,7 @@ if (master !== undefined) {
     }
 
     if (parsedReq.includes("set")) {
-      console.log("set req in slave");
+      console.log("set req in slave", Date.now());
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
@@ -104,7 +103,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq.includes("set")) {
-      console.log("set req in master");
+      console.log("set req in master", Date.now());
       forwardToReplicas(data);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
