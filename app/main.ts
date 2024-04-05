@@ -52,6 +52,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     const req = data.toString();
 
     if (req === REPLCONF || req === REPLCONFCapa) {
+      console.log("reached here");
       connection.write("+OK\r\n");
       return;
     }
