@@ -10,6 +10,7 @@ import { Buffer } from "node:buffer";
 const PORT = argv[3] ? Number(argv[3]) : 6379;
 const map = {};
 const timemap = {};
+const replicas: net.Socket[] = [];
 let master: number | undefined = undefined;
 if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 
@@ -32,6 +33,12 @@ const sendEmptyRDBFile = () => {
   const head = Buffer.from(`$${len}\r\n`);
   return Buffer.concat([head, body]);
   1;
+};
+
+const forwardToReplicas = (data: Buffer) => {
+  replicas.map((connection) => {
+    connection.write(data);
+  });
 };
 
 if (master !== undefined) {
@@ -87,6 +94,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       // const len = rdbbuffer.length;
       // const start = Buffer.concat([Buffer.from(`${len}\r\n`), rdbbuffer]);
       connection.write(sendEmptyRDBFile());
+      replicas.push(connection);
 
       return;
     }
@@ -109,8 +117,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
-      connection.write(data);
       connection.write(`+OK\r\n`);
+      forwardToReplicas(data);
       return;
     }
 
