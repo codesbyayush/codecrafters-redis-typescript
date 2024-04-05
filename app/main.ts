@@ -34,16 +34,13 @@ if (master !== undefined) {
 
     if (parsedReq === "PONG") {
       masterConn.write(handshake[step++]);
+      masterConn.write(REPLCONFCapa);
     }
 
-    let res = REPLCONFCapa.substring(0, 2).includes("\n")
-      ? REPLCONFCapa.substring(2)
-      : REPLCONFCapa;
-
-    if (step < 3 && parsedReq === "OK") {
-      console.log(res);
-      masterConn.write(res);
-    }
+    // if (step < 3 && parsedReq === "OK") {
+    //   console.log(REPLCONFCapa);
+    //   masterConn.write(REPLCONFCapa);
+    // }
   });
 }
 
