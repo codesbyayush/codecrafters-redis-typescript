@@ -30,8 +30,8 @@ const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 const sendEmptyRDBFile = () => {
   const body = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
   const len = body.length;
-  const head = Buffer.from(`$${len}\r\n`);
-  return Buffer.concat([head, body]);
+  // const head = Buffer.from(`$${len}\r\n`);
+  // return Buffer.concat([head, body]);
   1;
 };
 
