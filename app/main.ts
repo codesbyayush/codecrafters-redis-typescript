@@ -110,7 +110,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq[0].toLowerCase() === "set") {
-      console.log(map);
+      console.log("map: ", map);
       forwardToReplicas(data);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
