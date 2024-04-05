@@ -24,8 +24,6 @@ const MASTERREPLOFFSET = 0;
 const EMPTYRDBFILE_BASE64 =
   "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
 
-// const EMPTYRDBFILE_BINARY = parseInt(EMPTYRDBFILE_BASE64, 64).toString(2);
-
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 
 const sendEmptyRDBFile = () => {
@@ -40,7 +38,6 @@ if (master !== undefined) {
   let step = 0;
   const masterConn = net.createConnection(master, "localhost", () => {
     masterConn.write(PING);
-    // console.log("connected to master at", master);
     return;
   });
 
@@ -61,6 +58,7 @@ if (master !== undefined) {
     }
 
     if (parsedReq[0].toLowerCase() === "set") {
+      console.log("set req in slave");
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
