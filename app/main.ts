@@ -57,7 +57,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
 
-    if (parsedReq[0] === "ping") {
+    if (
+      parsedReq[0].toLowerCase() === "ping" ||
+      parsedReq.toLowerCase().includes("ping")
+    ) {
       connection.write("+PONG\r\n");
       return;
     }
