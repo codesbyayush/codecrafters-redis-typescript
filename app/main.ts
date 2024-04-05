@@ -65,9 +65,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
     if (PSYNC === req) {
       connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
-      connection.write(
-        Buffer.from(`$${EMPTYRDBFILE_BASE64.length}\r\n${EMPTYRDBFILE_BASE64}`)
+
+      const rdbfileempty = Buffer.from(
+        `$${EMPTYRDBFILE_BASE64.length}\r\n${EMPTYRDBFILE_BASE64}`
       );
+      connection.write(rdbfileempty);
+
       return;
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
