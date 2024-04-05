@@ -3,10 +3,6 @@ import { RESP2parser } from "./respParser.ts";
 import { argv } from "node:process";
 import { Buffer } from "node:buffer";
 
-// You can use print statements as follows for debugging, they'll be visible when running tests.
-// console.log("Logs from your program will appear here!");
-// const args = argv.slice(2);
-
 const PORT = argv[3] ? Number(argv[3]) : 6379;
 const map = {};
 const timemap = {};
@@ -34,7 +30,7 @@ const sendEmptyRDBFile = () => {
   1;
 };
 
-const forwardToReplicas = async (data: Buffer, con?: net.Socket) => {
+const forwardToReplicas = async (data: Buffer) => {
   replicas.map((conn) => {
     conn.write(data);
   });
@@ -64,14 +60,12 @@ if (master !== undefined) {
     }
 
     if (parsedReq.includes("set")) {
-      console.log("set req in slave", Date.now());
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
-      masterConn.write("Got the request");
       return;
     }
   });
@@ -105,7 +99,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq.includes("set")) {
-      console.log("set req in master", Date.now());
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
@@ -118,8 +111,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq.includes("get")) {
-      console.log("get req", Date.now());
-
       if (!map[parsedReq[1]]) {
         connection.write(`$-1\r\n`);
         return;
@@ -129,8 +120,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         return;
       }
       if (timemap[parsedReq[1]] >= Date.now()) {
-        console.log(Date.now(), timemap[parsedReq[1]]);
-
         connection.write(`+${map[parsedReq[1]]}\r\n`);
         return;
       }
