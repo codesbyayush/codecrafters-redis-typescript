@@ -34,9 +34,9 @@ const sendEmptyRDBFile = () => {
   1;
 };
 
-const forwardToReplicas = (data: Buffer) => {
+const forwardToReplicas = (data: Buffer, con: net.Socket) => {
   replicas.map((connection) => {
-    connection.write(data);
+    connection !== con && connection.write(data);
   });
 };
 
@@ -88,13 +88,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
     if (PSYNC === req) {
       connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
-
-      // const rdbbuffer = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
-      // const len = rdbbuffer.length;
-      // const start = Buffer.concat([Buffer.from(`${len}\r\n`), rdbbuffer]);
       connection.write(sendEmptyRDBFile());
       replicas.push(connection);
-
       return;
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
@@ -109,10 +104,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    console.log(parsedReq[0], parsedReq);
-
     if (parsedReq[0].toLowerCase() === "set") {
-      forwardToReplicas(data);
+      forwardToReplicas(data, connection);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
