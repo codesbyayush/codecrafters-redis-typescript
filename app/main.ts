@@ -51,6 +51,7 @@ if (master !== undefined) {
     const req = data.toString().toLowerCase();
 
     const parsedReq = RESP2parser(req.split("\r\n"));
+    console.log(parsedReq);
 
     if (parsedReq.includes("pong")) {
       masterConn.write(handshake[step++]);
@@ -102,7 +103,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    console.log(parsedReq);
     if (parsedReq.includes("set")) {
       console.log("set req in master");
       forwardToReplicas(data);
