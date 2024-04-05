@@ -102,7 +102,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    console.log(parsedReq, replicas);
+    console.log(parsedReq);
     if (parsedReq.includes("set")) {
       console.log("set req in master");
       forwardToReplicas(data);
