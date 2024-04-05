@@ -41,8 +41,8 @@ if (master !== undefined) {
       : REPLCONFCapa;
 
     if (step < 3 && parsedReq === "OK") {
+      console.log(res);
       masterConn.write(res);
-      console.log(step++);
     }
   });
 }
