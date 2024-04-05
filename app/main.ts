@@ -48,7 +48,7 @@ if (master !== undefined) {
   });
 
   masterConn.on("data", (data) => {
-    const req = data.toString();
+    const req = data.toString().toLowerCase();
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
@@ -63,7 +63,7 @@ if (master !== undefined) {
       return;
     }
 
-    if (parsedReq[0].toLowerCase() === "set") {
+    if (parsedReq.includes("set")) {
       console.log("set req in slave");
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
@@ -80,7 +80,7 @@ if (master !== undefined) {
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", async (data: Buffer) => {
-    const req = data.toString();
+    const req = data.toString().toLowerCase();
 
     if ([REPLCONF, REPLCONFCapa].includes(req)) {
       connection.write("+OK\r\n");
@@ -94,17 +94,17 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
 
-    if (parsedReq[0].toLowerCase() === "ping") {
+    if (parsedReq.includes("ping")) {
       connection.write("+PONG\r\n");
       return;
     }
 
-    if (parsedReq[0].toLowerCase() === "echo") {
+    if (parsedReq.includes("echo")) {
       connection.write(`$${parsedReq[1].length}\r\n${parsedReq[1]}\r\n`);
       return;
     }
 
-    if (parsedReq[0].toLowerCase() === "set") {
+    if (parsedReq.includes("set")) {
       forwardToReplicas(data, connection);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
@@ -116,7 +116,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    if (parsedReq[0].toLowerCase() === "get") {
+    if (parsedReq.includes("get")) {
       if (!map[parsedReq[1]]) {
         connection.write(`$-1\r\n`);
         return;
@@ -136,7 +136,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       connection.write(`$-1\r\n`);
     }
 
-    if (parsedReq[0].toLowerCase() === "info") {
+    if (parsedReq.includes("info")) {
       switch (parsedReq[1]) {
         case "replication":
           master === undefined
