@@ -57,7 +57,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       connection.write("+OK\r\n");
       return;
     }
-
     const parsedReq = RESP2parser(req.split("\r\n"));
 
     if (parsedReq[0] === "ping") {
