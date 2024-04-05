@@ -76,7 +76,6 @@ if (master !== undefined) {
   });
 }
 
-// Uncomment this block to pass the first stage
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   connection.on("data", async (data: Buffer) => {
