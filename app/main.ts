@@ -20,6 +20,10 @@ const PSYNC = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`;
 const MASTERREPLID = `8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb`;
 const MASTERREPLOFFSET = 0;
 
+const EMPTYRDBFILE_HEX = `524544495330303131fa0972656469732d76657205372e322e30fa0a72656469732d62697473c040fa056374696d65c26d08bc65fa08757365642d6d656dc2b0c41000fa08616f662d62617365c000fff06e3bfec0ff5aa2`;
+
+const EMPTYRDBFILE_BINARY = parseInt(EMPTYRDBFILE_HEX, 16).toString(2);
+
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 
 if (master !== undefined) {
@@ -60,6 +64,9 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
     if (PSYNC === req) {
       connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
+      connection.write(
+        `$${EMPTYRDBFILE_BINARY.length}\r\n${EMPTYRDBFILE_BINARY}`
+      );
       return;
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
