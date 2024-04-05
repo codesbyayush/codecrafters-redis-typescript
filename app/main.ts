@@ -17,6 +17,9 @@ const REPLCONF = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\
 const REPLCONFCapa = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`;
 const PSYNC = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`;
 
+const MASTERREPLID = `8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb`;
+const MASTERREPLOFFSET = 0;
+
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 
 if (master !== undefined) {
@@ -51,8 +54,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   connection.on("data", async (data: Buffer) => {
     const req = data.toString();
 
-    if (handshake.includes(req)) {
+    if ([REPLCONF, REPLCONFCapa].includes(req)) {
       connection.write("+OK\r\n");
+      return;
+    }
+    if (PSYNC === req) {
+      connection.write(`+FULLRESYNC${MASTERREPLID}${MASTERREPLOFFSET}\r\n`);
       return;
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
@@ -103,10 +110,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         case "replication":
           master === undefined
             ? connection.write(
-                `$87\r\nrole:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n`
+                `$87\r\nrole:master\nmaster_replid:${MASTERREPLID}\nmaster_repl_offset:${MASTERREPLOFFSET}\r\n`
               )
             : connection.write(
-                `$86\r\nrole:slave\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n`
+                `$86\r\nrole:slave\nmaster_replid:${MASTERREPLID}\nmaster_repl_offset:${MASTERREPLOFFSET}\r\n`
               );
       }
       return;
