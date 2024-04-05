@@ -13,9 +13,32 @@ let master: number | undefined = undefined;
 if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 
 if (master !== undefined) {
+  let step = 0;
   const masterConn = net.createConnection(master, "localhost", () => {
     masterConn.write("*1\r\n$4\r\nping\r\n");
+    step++;
     console.log("connected to master at", master);
+  });
+
+  const PING = `*1\r\n$4\r\nping\r\n`;
+  const REPLCONF = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n
+  `;
+  const REPLCONFCapa = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`;
+  const handshake = [PING, REPLCONF, REPLCONFCapa];
+
+  masterConn.on("data", async (data) => {
+    const req = data.toString();
+
+    const parsedReq = RESP2parser(req.split("\r\n"));
+
+    if (parsedReq[0] === "pong") {
+      masterConn.write(handshake[step++]);
+      return;
+    }
+    if (step < 3 && parsedReq[0] === "OK") {
+      masterConn.write(handshake[step++]);
+      return;
+    }
   });
 }
 
