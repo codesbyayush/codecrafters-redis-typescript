@@ -68,8 +68,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
       const rdbbuffer = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
       const len = rdbbuffer.length;
-      const start = Buffer.concat([Buffer.from(`$${len}\r\n`), rdbbuffer]);
-      connection.write(start);
+      const start = Buffer.concat([Buffer.from(`${len}\r\n`), rdbbuffer]);
+      connection.write(`$${len}\r\n${rdbbuffer}`);
 
       return;
     }
