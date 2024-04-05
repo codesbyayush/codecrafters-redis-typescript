@@ -53,6 +53,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   connection.on("data", async (data: Buffer) => {
     const req = data.toString();
 
+    console.log(req);
     if (req === REPLCONF || req === REPLCONFCapa) {
       console.log("reached here");
       connection.write("+OK\r\n");
