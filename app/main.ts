@@ -34,9 +34,9 @@ const sendEmptyRDBFile = () => {
   1;
 };
 
-const forwardToReplicas = (data: Buffer, con: net.Socket) => {
-  replicas.map((connection) => {
-    connection !== con && connection.write(data.toString());
+const forwardToReplicas = (data: Buffer, con?: net.Socket) => {
+  replicas.map((conn) => {
+    conn.write(data);
   });
 };
 
@@ -71,8 +71,6 @@ if (master !== undefined) {
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
-      console.log(map);
-      return;
     }
   });
 }
@@ -104,8 +102,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
+    console.log(parsedReq, replicas);
     if (parsedReq.includes("set")) {
-      forwardToReplicas(data, connection);
+      console.log("set req in master");
+      forwardToReplicas(data);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
