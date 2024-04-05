@@ -17,15 +17,15 @@ const REPLCONF = `*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\
 const REPLCONFCapa = `*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n`;
 const PSYNC = `*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n`;
 
+const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
+
 if (master !== undefined) {
-  let step = 1;
+  let step = 0;
   const masterConn = net.createConnection(master, "localhost", () => {
     masterConn.write(PING);
     // console.log("connected to master at", master);
     return;
   });
-
-  const handshake = [PING, REPLCONF, REPLCONFCapa, PSYNC];
 
   masterConn.on("data", async (data) => {
     const req = data.toString();
@@ -37,7 +37,7 @@ if (master !== undefined) {
       return;
     }
 
-    if (step < 4 && parsedReq === "OK") {
+    if (step < 3 && parsedReq === "OK") {
       masterConn.write(handshake[step]);
       step++;
       return;
@@ -51,9 +51,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   connection.on("data", async (data: Buffer) => {
     const req = data.toString();
 
-    console.log(req);
-    if (req === REPLCONF || req === REPLCONFCapa) {
-      console.log("reached here");
+    if (handshake.includes(req)) {
       connection.write("+OK\r\n");
       return;
     }
