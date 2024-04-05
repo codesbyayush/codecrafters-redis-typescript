@@ -110,13 +110,14 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq[0].toLowerCase() === "set") {
+      forwardToReplicas(data);
+      console.log(map);
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
         let expTime = Number(Date.now());
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
-      forwardToReplicas(data);
       connection.write(`+OK\r\n`);
       return;
     }
