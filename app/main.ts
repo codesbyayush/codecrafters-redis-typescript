@@ -59,7 +59,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
     if (PSYNC === req) {
-      connection.write(`+FULLRESYNC${MASTERREPLID}${MASTERREPLOFFSET}\r\n`);
+      connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
       return;
     }
     const parsedReq = RESP2parser(req.split("\r\n"));
