@@ -71,6 +71,7 @@ if (master !== undefined) {
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
+      console.log(map);
       return;
     }
   });
@@ -115,8 +116,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         expTime += Number(parsedReq[4]);
         timemap[parsedReq[1]] = expTime;
       }
-      connection.write(`+OK\r\n`);
       forwardToReplicas(data);
+      connection.write(`+OK\r\n`);
       return;
     }
 
