@@ -13,9 +13,11 @@ let master: number | undefined = undefined;
 if (argv[4] && argv[4] === "--replicaof") master = Number(argv[6]);
 
 if (master !== undefined) {
-  const masterConn = net.createConnection(master, "localhost");
-  masterConn.on("connect", (socket) => {
-    socket.write("*1\r\n$4\r\nping\r\n");
+  const masterConn = net.createConnection(master, "localhost", () => {
+    masterConn.on("connect", (socket) => {
+      socket.write("*1\r\n$4\r\nping\r\n");
+      socket.end();
+    });
   });
 }
 
