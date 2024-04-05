@@ -66,10 +66,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     if (PSYNC === req) {
       connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
 
-      const rdbbuffer = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
-      const len = rdbbuffer.length;
-      const start = Buffer.concat([Buffer.from(`${len}\r\n`), rdbbuffer]);
-      connection.write(`$${len}\r\n${rdbbuffer}`);
+      // const rdbbuffer = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
+      // const len = rdbbuffer.length;
+      // const start = Buffer.concat([Buffer.from(`${len}\r\n`), rdbbuffer]);
+      connection.write(
+        `$${EMPTYRDBFILE_BASE64.length}\r\n${EMPTYRDBFILE_BASE64}`
+      );
 
       return;
     }
