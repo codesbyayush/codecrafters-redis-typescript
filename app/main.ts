@@ -82,11 +82,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
   connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
 
-    if ([REPLCONF, REPLCONFCapa].includes(req)) {
+    if ([REPLCONF.toLowerCase(), REPLCONFCapa.toLowerCase()].includes(req)) {
       connection.write("+OK\r\n");
       return;
     }
-    if (PSYNC === req) {
+    if (PSYNC.toLowerCase() === req) {
       connection.write(`+FULLRESYNC ${MASTERREPLID} ${MASTERREPLOFFSET}\r\n`);
       connection.write(sendEmptyRDBFile());
       replicas.push(connection);
