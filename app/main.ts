@@ -1,6 +1,7 @@
 import * as net from "node:net";
 import { RESP2parser } from "./respParser.ts";
 import { argv } from "node:process";
+import { Buffer } from "node:buffer";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 // console.log("Logs from your program will appear here!");
@@ -30,8 +31,8 @@ const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 const sendEmptyRDBFile = () => {
   const body = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
   const len = body.length;
-  // const head = Buffer.from(`$${len}\r\n`);
-  // return Buffer.concat([head, body]);
+  const head = Buffer.from(`$${len}\r\n`);
+  return Buffer.concat([head, body]);
   1;
 };
 
