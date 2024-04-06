@@ -19,6 +19,7 @@ const MASTERREPLID = `8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb`;
 const MASTERREPLOFFSET = 0;
 const EMPTYRDBFILE_BASE64 =
   "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
+const REPLCONFGETBACK = `*3\r\n$8\r\nreplconf\r\n$6\r\ngetack\r\n$1\r\n*\r\n`;
 
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 
@@ -46,9 +47,14 @@ if (master !== undefined) {
   masterConn.on("data", (data) => {
     const req = data.toString().toLowerCase();
 
+    if (req.includes(REPLCONFGETBACK)) {
+      masterConn.write("*3\r\n$8\r\nREPLCONF\r\n$3\r\nACK\r\n$1\r\n0\r\n");
+      return;
+    }
+
     const parsedReq = RESP2parser(req.split("\r\n"));
 
-    if (parsedReq.includes("pong")) {
+    if (parsedReq.includes("pong") && step < 3) {
       masterConn.write(handshake[step++]);
       return;
     }
