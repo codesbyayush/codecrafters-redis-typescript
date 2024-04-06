@@ -2,8 +2,14 @@ let data: string[];
 
 export function RESP2parser(passedData: string[], ind = 0) {
   data = passedData;
-  let ans: any;
-  return helper(ind)[0];
+  let ans: any = [];
+  let index = 0;
+  while (index < passedData.length) {
+    const data = helper(index);
+    index += data[1];
+    ans = [...ans, ...data[0]];
+  }
+  return ans;
 }
 
 function handleArray(ind: number) {
