@@ -103,6 +103,7 @@ if (master !== undefined) {
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   let ack = 0;
+  let acktimeout: any = undefined;
 
   connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
@@ -141,14 +142,23 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     // console.log(parsedReq);
-    if (parsedReq.includes("ack")) ack++;
+    if (parsedReq.includes("ack")) {
+      ack--;
+      if (ack === 0) {
+        clearTimeout(acktimeout);
+        connection.write(`:${replicas.length}\r\n`);
+        return;
+      }
+    }
 
     if (parsedReq.includes("wait")) {
       forwardToReplicas(REPLCONFGETBACK.toUpperCase());
       if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
-        await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-        // connection.write(`:${ack}\r\n`);
-        // return;
+        ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
+        acktimeout = setTimeout(() => {
+          connection.write(`:${replicas.length}\r\n`);
+        }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+        return;
       }
       connection.write(`:${replicas.length}\r\n`);
     }
