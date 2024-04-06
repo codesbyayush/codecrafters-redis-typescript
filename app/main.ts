@@ -74,6 +74,7 @@ if (master !== undefined) {
       return;
     }
 
+    console.log(byteProcessed);
     if (parsedReq.includes("set")) {
       const indices: number[] = [];
       let idx: number = parsedReq.indexOf("set");
