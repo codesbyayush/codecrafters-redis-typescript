@@ -32,7 +32,7 @@ const sendEmptyRDBFile = () => {
   1;
 };
 
-const forwardToReplicas = async (data: Buffer) => {
+const forwardToReplicas = async (data: Buffer | string) => {
   replicas.map((conn) => {
     conn.write(data);
   });
@@ -102,7 +102,7 @@ if (master !== undefined) {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
-  // let ack = 0;
+  let ack = 0;
 
   connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
@@ -141,14 +141,15 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     // console.log(parsedReq);
+    if (parsedReq.includes("ack")) ack++;
 
     if (parsedReq.includes("wait")) {
-      replicas.map((conn, i) => {
-        if (i < Number(parsedReq[parsedReq.indexOf("wait") + 1]))
-          conn.write(REPLCONFGETBACK.toUpperCase());
-      });
-      if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
+      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
+      if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
         await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+        connection.write(`:${ack}\r\n`);
+        return;
+      }
       connection.write(`:${replicas.length}\r\n`);
     }
 
