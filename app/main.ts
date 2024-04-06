@@ -46,8 +46,6 @@ if (master !== undefined) {
   masterConn.on("data", (data) => {
     const req = data.toString().toLowerCase();
 
-    console.log(req);
-
     const parsedReq = RESP2parser(req.split("\r\n"));
 
     if (parsedReq.includes("pong")) {
@@ -62,12 +60,16 @@ if (master !== undefined) {
     }
 
     if (parsedReq.includes("set")) {
-      map[parsedReq[1]] = parsedReq[2];
-      if (parsedReq.length > 3 && parsedReq[3] === "px") {
-        let expTime = Number(Date.now());
-        expTime += Number(parsedReq[4]);
-        timemap[parsedReq[1]] = expTime;
-      }
+      let idx = parsedReq.indexOf("set");
+      idx.map((index) => {
+        map[parsedReq[index + 1]] = parsedReq[index + 2];
+        if (parsedReq.length > index + 3 && parsedReq[index + 3] === "px") {
+          let expTime = Number(Date.now());
+          expTime += Number(parsedReq[index + 4]);
+          timemap[parsedReq[index + 1]] = expTime;
+        }
+      });
+
       return;
     }
   });
