@@ -47,19 +47,20 @@ if (master !== undefined) {
 
   masterConn.on("data", (data) => {
     const req = data.toString().toLowerCase();
+    byteProcessed += req.length;
 
     console.log(req.length);
 
     if (req.includes(REPLCONFGETBACK)) {
-      const tempOffset = String(byteProcessed > 0 ? byteProcessed : 0);
+      const tempOffset = String(
+        byteProcessed - 37 > 0 ? byteProcessed - 37 : 0
+      );
       masterConn.write(
         `*3\r\n$8\r\nREPLCONF\r\n$3\r\nACK\r\n$${tempOffset.length}\r\n${tempOffset}\r\n`
       );
-      byteProcessed += req.length;
 
       return;
     }
-    byteProcessed += req.length;
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
