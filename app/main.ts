@@ -58,7 +58,6 @@ if (master !== undefined) {
       return;
     }
     byteProcessed += req.length;
-    console.log(byteProcessed);
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
@@ -74,6 +73,8 @@ if (master !== undefined) {
       step++;
       return;
     }
+
+    console.log(byteProcessed);
     if (parsedReq.includes("set")) {
       const indices: number[] = [];
       let idx: number = parsedReq.indexOf("set");
