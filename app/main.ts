@@ -74,7 +74,6 @@ if (master !== undefined) {
       return;
     }
 
-    console.log(byteProcessed);
     if (parsedReq.includes("set")) {
       const indices: number[] = [];
       let idx: number = parsedReq.indexOf("set");
@@ -124,6 +123,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     if (parsedReq.includes("echo")) {
       connection.write(`$${parsedReq[1].length}\r\n${parsedReq[1]}\r\n`);
+      return;
+    }
+
+    if (parsedReq.includes("wait")) {
+      connection.write(`:0\r\n`);
       return;
     }
 
