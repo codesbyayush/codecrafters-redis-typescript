@@ -32,7 +32,7 @@ const sendEmptyRDBFile = () => {
   1;
 };
 
-const forwardToReplicas = async (data: Buffer) => {
+const forwardToReplicas = async (data: Buffer | string) => {
   replicas.map((conn) => {
     conn.write(data);
   });
@@ -62,8 +62,6 @@ if (master !== undefined) {
       masterConn.write(
         `*3\r\n$8\r\nREPLCONF\r\n$3\r\nACK\r\n$${tempOffset.length}\r\n${tempOffset}\r\n`
       );
-
-      return;
     }
 
     const parsedReq = RESP2parser(req.split("\r\n"));
@@ -97,7 +95,6 @@ if (master !== undefined) {
           timemap[parsedReq[index + 1]] = expTime;
         }
       });
-      masterConn.write("+ack\r\n");
       return;
     }
   });
@@ -132,10 +129,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    if (parsedReq.includes("ack")) {
-      ack++;
-    }
-
     if (parsedReq.includes("set")) {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
@@ -147,12 +140,12 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       forwardToReplicas(data);
     }
 
-    console.log(parsedReq);
+    // console.log(parsedReq);
 
     if (parsedReq.includes("wait")) {
-      console.log("inside wait ");
-      // if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
-      //   await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+      forwardToReplicas(REPLCONFGETBACK);
+      if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
+        await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
       connection.write(`:${replicas.length}\r\n`);
     }
 
