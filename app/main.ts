@@ -58,6 +58,7 @@ if (master !== undefined) {
       return;
     }
     byteProcessed += req.length;
+    console.log(byteProcessed);
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
@@ -69,7 +70,6 @@ if (master !== undefined) {
     if (step < 3 && parsedReq.includes("ok")) {
       masterConn.write(handshake[step]);
       step++;
-      byteProcessed = 0;
       return;
     }
     if (parsedReq.includes("set")) {
@@ -91,7 +91,7 @@ if (master !== undefined) {
       return;
     }
     if (step < 4) {
-      byteProcessed -= req.length;
+      byteProcessed = 0;
       step++;
     }
   });
