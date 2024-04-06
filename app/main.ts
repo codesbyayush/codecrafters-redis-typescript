@@ -144,8 +144,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     console.log(parsedReq);
 
     if (parsedReq.includes("wait")) {
-      if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
-        await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+      // if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
+      //   await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
       connection.write(`:${replicas.length}\r\n`);
     }
 
