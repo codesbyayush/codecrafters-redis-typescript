@@ -48,6 +48,8 @@ if (master !== undefined) {
   masterConn.on("data", (data) => {
     const req = data.toString().toLowerCase();
 
+    console.log(req.length);
+
     if (req.includes(REPLCONFGETBACK)) {
       const tempOffset = String(byteProcessed > 0 ? byteProcessed : 0);
       masterConn.write(
