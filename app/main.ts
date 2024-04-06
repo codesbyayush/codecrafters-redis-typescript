@@ -150,11 +150,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     console.log(parsedReq);
 
     if (parsedReq.includes("wait")) {
-      ack = 0;
       console.log("inside wait ");
       if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
         await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-      connection.write(`:${ack}\r\n`);
+      connection.write(`:${replicas.length}\r\n`);
     }
 
     if (parsedReq.includes("get")) {
