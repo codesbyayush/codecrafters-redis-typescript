@@ -46,6 +46,8 @@ if (master !== undefined) {
   masterConn.on("data", (data) => {
     const req = data.toString().toLowerCase();
 
+    console.log(req);
+
     const parsedReq = RESP2parser(req.split("\r\n"));
 
     if (parsedReq.includes("pong")) {
@@ -58,8 +60,6 @@ if (master !== undefined) {
       step++;
       return;
     }
-
-    console.log(parsedReq, parsedReq[0]);
 
     if (parsedReq.includes("set")) {
       map[parsedReq[1]] = parsedReq[2];
