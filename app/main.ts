@@ -58,9 +58,10 @@ if (master !== undefined) {
       step++;
       return;
     }
-
+    console.log(req, "parsed :", parsedReq);
     if (parsedReq.includes("set")) {
       let idx = parsedReq.indexOf("set");
+      console.log(idx);
       idx.map((index) => {
         map[parsedReq[index + 1]] = parsedReq[index + 2];
         if (parsedReq.length > index + 3 && parsedReq[index + 3] === "px") {
