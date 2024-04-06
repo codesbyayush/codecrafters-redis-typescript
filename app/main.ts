@@ -22,6 +22,7 @@ const EMPTYRDBFILE_BASE64 =
 const REPLCONFGETBACK = `*3\r\n$8\r\nreplconf\r\n$6\r\ngetack\r\n$1\r\n*\r\n`;
 
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
+let byteProcessed = 0;
 
 const sendEmptyRDBFile = () => {
   const body = Buffer.from(EMPTYRDBFILE_BASE64, "base64");
@@ -48,9 +49,15 @@ if (master !== undefined) {
     const req = data.toString().toLowerCase();
 
     if (req.includes(REPLCONFGETBACK)) {
-      masterConn.write("*3\r\n$8\r\nREPLCONF\r\n$3\r\nACK\r\n$1\r\n0\r\n");
+      const tempOffset = String(byteProcessed);
+      masterConn.write(
+        `*3\r\n$8\r\nREPLCONF\r\n$3\r\nACK\r\n$${tempOffset.length}\r\n${tempOffset}\r\n`
+      );
+      byteProcessed += req.length;
+
       return;
     }
+    byteProcessed += req.length;
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
@@ -62,6 +69,7 @@ if (master !== undefined) {
     if (step < 3 && parsedReq.includes("ok")) {
       masterConn.write(handshake[step]);
       step++;
+      byteProcessed = 0;
       return;
     }
     if (parsedReq.includes("set")) {
