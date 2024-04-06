@@ -59,6 +59,8 @@ if (master !== undefined) {
       return;
     }
 
+    console.log(typeof parsedReq, typeof parsedReq[0]);
+
     if (parsedReq.includes("set")) {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
