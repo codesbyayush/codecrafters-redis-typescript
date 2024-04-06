@@ -53,7 +53,7 @@ if (master !== undefined) {
     const req = data.toString().toLowerCase();
     byteProcessed += req.length;
 
-    console.log(req.length);
+    // console.log(req.length);
 
     if (req.includes(REPLCONFGETBACK)) {
       const tempOffset = String(
@@ -81,7 +81,7 @@ if (master !== undefined) {
       return;
     }
 
-    console.log(byteProcessed);
+    // console.log(byteProcessed);
     if (parsedReq.includes("set")) {
       const indices: number[] = [];
       let idx: number = parsedReq.indexOf("set");
@@ -97,7 +97,7 @@ if (master !== undefined) {
           timemap[parsedReq[index + 1]] = expTime;
         }
       });
-
+      masterConn.write("+ack\r\n");
       return;
     }
   });
@@ -105,6 +105,8 @@ if (master !== undefined) {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
+  let ack = 0;
+
   connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
 
@@ -130,6 +132,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
+    if (parsedReq.includes("ack")) {
+      ack++;
+    }
+
     if (parsedReq.includes("set")) {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
@@ -144,10 +150,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     console.log(parsedReq);
 
     if (parsedReq.includes("wait")) {
+      ack = 0;
       console.log("inside wait ");
-      // if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
-      //   await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-      connection.write(`:${replicas.length}\r\n`);
+      if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0)
+        await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+      connection.write(`:${ack}\r\n`);
     }
 
     if (parsedReq.includes("get")) {
