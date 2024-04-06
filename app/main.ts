@@ -61,7 +61,7 @@ if (master !== undefined) {
 
     const parsedReq = RESP2parser(req.split("\r\n"));
 
-    if (parsedReq.includes("pong") && step < 3) {
+    if (parsedReq.includes("pong")) {
       masterConn.write(handshake[step++]);
       return;
     }
@@ -89,6 +89,10 @@ if (master !== undefined) {
       });
 
       return;
+    }
+    if (step < 4) {
+      byteProcessed -= req.length;
+      step++;
     }
   });
 }
