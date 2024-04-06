@@ -1,6 +1,7 @@
 let data: string[];
 
 export function RESP2parser(passedData: string[], ind = 0) {
+  console.log(passedData);
   data = passedData;
   let ans: any;
   return helper(ind)[0];
