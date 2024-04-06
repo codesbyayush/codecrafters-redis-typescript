@@ -49,7 +49,7 @@ if (master !== undefined) {
     const req = data.toString().toLowerCase();
 
     if (req.includes(REPLCONFGETBACK)) {
-      const tempOffset = String(byteProcessed);
+      const tempOffset = String(byteProcessed > 0 ? byteProcessed : 0);
       masterConn.write(
         `*3\r\n$8\r\nREPLCONF\r\n$3\r\nACK\r\n$${tempOffset.length}\r\n${tempOffset}\r\n`
       );
