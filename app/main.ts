@@ -127,7 +127,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq.includes("wait")) {
-      connection.write(`:0\r\n`);
+      connection.write(`:${replicas.length}\r\n`);
       return;
     }
 
