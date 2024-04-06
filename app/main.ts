@@ -38,6 +38,10 @@ const forwardToReplicas = async (data: Buffer) => {
   });
 };
 
+const waitFn = (time) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};
+
 if (master !== undefined) {
   let step = 0;
   const masterConn = net.createConnection(master, "localhost", () => {
@@ -101,7 +105,7 @@ if (master !== undefined) {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
-  connection.on("data", (data: Buffer) => {
+  connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
 
     if ([REPLCONF.toLowerCase(), REPLCONFCapa.toLowerCase()].includes(req)) {
@@ -126,11 +130,6 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       return;
     }
 
-    if (parsedReq.includes("wait")) {
-      connection.write(`:${replicas.length}\r\n`);
-      return;
-    }
-
     if (parsedReq.includes("set")) {
       map[parsedReq[1]] = parsedReq[2];
       if (parsedReq.length > 3 && parsedReq[3] === "px") {
@@ -140,7 +139,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       }
       connection.write(`+OK\r\n`);
       forwardToReplicas(data);
-      return;
+    }
+
+    if (parsedReq.includes("wait")) {
+      await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+      connection.write(`:${replicas.length}\r\n`);
     }
 
     if (parsedReq.includes("get")) {
