@@ -7,7 +7,8 @@ export function RESP2parser(passedData: string[], ind = 0) {
   while (index < passedData.length) {
     const data = helper(index);
     index += data[1];
-    ans = [...ans, ...data[0]];
+    if (Array.isArray(data[0])) ans = [...ans, ...data[0]];
+    else ans.push(data[0]);
   }
   return ans;
 }
