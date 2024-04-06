@@ -59,7 +59,7 @@ if (master !== undefined) {
       return;
     }
 
-    console.log(typeof parsedReq, typeof parsedReq[0]);
+    console.log(parsedReq, parsedReq[0]);
 
     if (parsedReq.includes("set")) {
       map[parsedReq[1]] = parsedReq[2];
