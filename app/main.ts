@@ -68,7 +68,7 @@ if (master !== undefined) {
 
     if (step < 3 && parsedReq.includes("ok")) {
       masterConn.write(handshake[step]);
-      byteProcessed = -148;
+      byteProcessed = -134;
 
       step++;
       return;
