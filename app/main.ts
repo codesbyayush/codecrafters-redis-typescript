@@ -147,7 +147,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       forwardToReplicas(REPLCONFGETBACK.toUpperCase());
       if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
         await waitFn(Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-        connection.write(`:${ack}\r\n`);
+        // connection.write(`:${ack}\r\n`);
         // return;
       }
       connection.write(`:${replicas.length}\r\n`);
