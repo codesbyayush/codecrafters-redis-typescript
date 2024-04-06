@@ -19,7 +19,7 @@ const MASTERREPLID = `8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb`;
 const MASTERREPLOFFSET = 0;
 const EMPTYRDBFILE_BASE64 =
   "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog==";
-const REPLCONFGETBACK = `*3\r\n$8\r\nreplconf\r\n$6\r\ngetack\r\n$1\r\n*\r\n`;
+const REPLCONFGETBACK = `*3\r\n$8\r\nREPLCONF\r\n$6\r\nGETACK\r\n$1\r\n*\r\n`;
 
 const handshake = [REPLCONF, REPLCONFCapa, PSYNC];
 let byteProcessed = 0;
@@ -102,7 +102,7 @@ if (master !== undefined) {
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
-  let ack = 0;
+  // let ack = 0;
 
   connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
