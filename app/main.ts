@@ -154,14 +154,15 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     }
 
     if (parsedReq.includes("wait")) {
+      console.log(replicas.length);
       if (replicas.length === 0) {
         connection.write(`:${replicas.length}\r\n`);
       }
+      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
+      reps = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
       acktimeout = setTimeout(() => {
         connection.write(`:${ack}\r\n`);
       }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-      reps = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
-      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
     }
 
     if (parsedReq.includes("get")) {
