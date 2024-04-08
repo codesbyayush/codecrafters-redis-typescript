@@ -100,7 +100,7 @@ let reps = 0;
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   let acktimeout: any = undefined;
-
+  let sent = false;
   connection.on("data", async (data: Buffer) => {
     const req = data.toString().toLowerCase();
 
@@ -143,7 +143,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       console.log("ack:", ack);
       console.log("reps:", reps);
       console.log(ack >= reps);
-      if (ack >= reps) {
+      if (ack >= reps && !sent) {
+        sent = true;
         clearTimeout(acktimeout);
         connection.write(`:${reps}\r\n`);
         return;
