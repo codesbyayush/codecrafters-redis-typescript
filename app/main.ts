@@ -150,10 +150,13 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       //   return;
       // }
     }
+    console.log(parsedReq);
 
     if (parsedReq.includes("wait")) {
-      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
+      console.log(replicas.length);
       if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
+        forwardToReplicas(REPLCONFGETBACK.toUpperCase());
+
         // ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
         acktimeout = setTimeout(() => {
           connection.write(`:${ack}\r\n`);
