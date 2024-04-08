@@ -137,9 +137,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       forwardToReplicas(data);
     }
 
+    console.log(parsedReq);
     if (parsedReq.includes("ack")) {
       ack++;
-      console.log(ack);
+      console.log("ack:", ack);
       if (ack >= reps) {
         clearTimeout(acktimeout);
         connection.write(`:${reps}\r\n`);
@@ -147,10 +148,9 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       }
     }
 
-    console.log(parsedReq);
     if (parsedReq.includes("wait")) {
       // console.log(replicas.length);
-      console.log(ack);
+      // console.log(ack);
       ack = 0;
       if (replicas.length === 0) {
         connection.write(`:${replicas.length}\r\n`);
