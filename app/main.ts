@@ -143,20 +143,20 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     // console.log(parsedReq);
     if (parsedReq.includes("ack")) {
-      ack--;
-      if (ack === 0) {
-        clearTimeout(acktimeout);
-        connection.write(`:${replicas.length}\r\n`);
-        return;
-      }
+      ack++;
+      // if (ack === 0) {
+      //   clearTimeout(acktimeout);
+      //   connection.write(`:${replicas.length}\r\n`);
+      //   return;
+      // }
     }
 
     if (parsedReq.includes("wait")) {
       forwardToReplicas(REPLCONFGETBACK.toUpperCase());
       if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
-        ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
+        // ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
         acktimeout = setTimeout(() => {
-          connection.write(`:${replicas.length}\r\n`);
+          connection.write(`:${ack}\r\n`);
         }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
         return;
       }
