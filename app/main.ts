@@ -100,10 +100,11 @@ if (master !== undefined) {
   });
 }
 
+let ack = 0;
+let reps = 0;
+
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
-  let ack = 0;
-  let reps = 0;
   let acktimeout: any = undefined;
 
   connection.on("data", async (data: Buffer) => {
@@ -146,7 +147,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     if (parsedReq.includes("ack")) {
       ack++;
       console.log(ack);
-      if (ack === reps) {
+      if (ack >= reps) {
         clearTimeout(acktimeout);
         connection.write(`:${ack}\r\n`);
         return;
@@ -155,6 +156,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     if (parsedReq.includes("wait")) {
       console.log(replicas.length);
+      console.log(ack);
       if (replicas.length === 0) {
         connection.write(`:${replicas.length}\r\n`);
       }
