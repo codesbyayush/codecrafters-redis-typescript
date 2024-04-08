@@ -34,6 +34,7 @@ const sendEmptyRDBFile = () => {
 
 const forwardToReplicas = (data: Buffer | string) => {
   replicas.map((conn) => {
+    console.log("sent request");
     conn.write(data);
   });
 };
@@ -154,11 +155,11 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       if (replicas.length === 0) {
         connection.write(`:${replicas.length}\r\n`);
       }
-      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
       reps = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
       acktimeout = setTimeout(() => {
         connection.write(`:${ack}\r\n`);
       }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
     }
 
     if (parsedReq.includes("get")) {
