@@ -142,7 +142,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       forwardToReplicas(data);
     }
 
-    // console.log(parsedReq);
+    console.log(parsedReq);
     if (parsedReq.includes("ack")) {
       ack++;
       console.log(ack);
