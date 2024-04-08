@@ -142,7 +142,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       console.log(ack);
       if (ack >= reps) {
         clearTimeout(acktimeout);
-        connection.write(`:${ack}\r\n`);
+        connection.write(`:${reps}\r\n`);
         return;
       }
     }
