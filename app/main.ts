@@ -147,6 +147,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       }
     }
 
+    console.log(parsedReq);
     if (parsedReq.includes("wait")) {
       // console.log(replicas.length);
       console.log(ack);
