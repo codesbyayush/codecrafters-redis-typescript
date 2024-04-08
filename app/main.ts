@@ -141,6 +141,8 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     if (parsedReq.includes("ack")) {
       ack++;
       console.log("ack:", ack);
+      console.log("reps:", reps);
+      console.log(ack >= reps);
       if (ack >= reps) {
         clearTimeout(acktimeout);
         connection.write(`:${reps}\r\n`);
