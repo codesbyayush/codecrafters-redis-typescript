@@ -49,8 +49,6 @@ if (master !== undefined) {
   masterConn.on("data", (data) => {
     const req = data.toString().toLowerCase();
     byteProcessed += req.length;
-
-    console.log("got req");
     if (req.includes("getack")) {
       const tempOffset = String(
         byteProcessed - 37 > 0 ? byteProcessed - 37 : 0
@@ -160,7 +158,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       acktimeout = setTimeout(() => {
         connection.write(`:${ack}\r\n`);
       }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
+      forwardToReplicas(REPLCONFGETBACK);
     }
 
     if (parsedReq.includes("get")) {
