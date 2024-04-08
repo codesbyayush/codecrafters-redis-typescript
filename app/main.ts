@@ -38,10 +38,6 @@ const forwardToReplicas = async (data: Buffer | string) => {
   });
 };
 
-const waitFn = (time) => {
-  return new Promise((resolve) => setTimeout(resolve, time));
-};
-
 if (master !== undefined) {
   let step = 0;
   const masterConn = net.createConnection(master, "localhost", () => {
@@ -56,6 +52,7 @@ if (master !== undefined) {
     // console.log(req.length);
 
     if (req.includes(REPLCONFGETBACK)) {
+      console.log("acknow");
       const tempOffset = String(
         byteProcessed - 37 > 0 ? byteProcessed - 37 : 0
       );
