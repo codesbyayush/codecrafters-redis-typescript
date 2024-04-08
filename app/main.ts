@@ -143,56 +143,56 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
 
     // console.log(parsedReq);
     if (parsedReq.includes("ack")) {
-      ack--;
-      if (ack === 0) {
-        clearTimeout(acktimeout);
-        connection.write(`:${replicas.length}\r\n`);
+      ack++;
+      // if (ack === 0) {
+      //   clearTimeout(acktimeout);
+      //   connection.write(`:${replicas.length}\r\n`);
+      //   return;
+      // }
+    }
+
+    if (parsedReq.includes("wait")) {
+      forwardToReplicas(REPLCONFGETBACK.toUpperCase());
+      if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
+        // ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
+        acktimeout = setTimeout(() => {
+          connection.write(`:${ack}\r\n`);
+        }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
         return;
       }
+      connection.write(`:${replicas.length}\r\n`);
+    }
 
-      if (parsedReq.includes("wait")) {
-        forwardToReplicas(REPLCONFGETBACK.toUpperCase());
-        if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
-          ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
-          acktimeout = setTimeout(() => {
-            connection.write(`:${replicas.length}\r\n`);
-          }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-          return;
-        }
-        connection.write(`:${replicas.length}\r\n`);
-      }
-
-      if (parsedReq.includes("get")) {
-        if (!map[parsedReq[1]]) {
-          connection.write(`$-1\r\n`);
-          return;
-        }
-        if (!timemap[parsedReq[1]]) {
-          connection.write(`+${map[parsedReq[1]]}\r\n`);
-          return;
-        }
-        if (timemap[parsedReq[1]] >= Date.now()) {
-          connection.write(`+${map[parsedReq[1]]}\r\n`);
-          return;
-        }
-
-        delete timemap[parsedReq[1]];
+    if (parsedReq.includes("get")) {
+      if (!map[parsedReq[1]]) {
         connection.write(`$-1\r\n`);
-      }
-
-      if (parsedReq.includes("info")) {
-        switch (parsedReq[1]) {
-          case "replication":
-            master === undefined
-              ? connection.write(
-                  `$87\r\nrole:master\nmaster_replid:${MASTERREPLID}\nmaster_repl_offset:${MASTERREPLOFFSET}\r\n`
-                )
-              : connection.write(
-                  `$86\r\nrole:slave\nmaster_replid:${MASTERREPLID}\nmaster_repl_offset:${MASTERREPLOFFSET}\r\n`
-                );
-        }
         return;
       }
+      if (!timemap[parsedReq[1]]) {
+        connection.write(`+${map[parsedReq[1]]}\r\n`);
+        return;
+      }
+      if (timemap[parsedReq[1]] >= Date.now()) {
+        connection.write(`+${map[parsedReq[1]]}\r\n`);
+        return;
+      }
+
+      delete timemap[parsedReq[1]];
+      connection.write(`$-1\r\n`);
+    }
+
+    if (parsedReq.includes("info")) {
+      switch (parsedReq[1]) {
+        case "replication":
+          master === undefined
+            ? connection.write(
+                `$87\r\nrole:master\nmaster_replid:${MASTERREPLID}\nmaster_repl_offset:${MASTERREPLOFFSET}\r\n`
+              )
+            : connection.write(
+                `$86\r\nrole:slave\nmaster_replid:${MASTERREPLID}\nmaster_repl_offset:${MASTERREPLOFFSET}\r\n`
+              );
+      }
+      return;
     }
   });
 });
