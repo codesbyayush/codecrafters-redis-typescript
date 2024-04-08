@@ -32,9 +32,8 @@ const sendEmptyRDBFile = () => {
   1;
 };
 
-const forwardToReplicas = async (data: Buffer | string) => {
+const forwardToReplicas = (data: Buffer | string) => {
   replicas.map((conn) => {
-    console.log("sent req to ");
     conn.write(data);
   });
 };
