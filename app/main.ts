@@ -156,7 +156,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       }
       reps = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
       acktimeout = setTimeout(() => {
-        connection.write(`:${ack}\r\n`);
+        connection.write(`:${replicas.length}\r\n`);
       }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
       forwardToReplicas(REPLCONFGETBACK);
     }
