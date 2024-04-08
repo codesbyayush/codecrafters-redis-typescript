@@ -49,10 +49,9 @@ if (master !== undefined) {
     const req = data.toString().toLowerCase();
     byteProcessed += req.length;
 
-    // console.log(req.length);
+    console.log(req);
 
-    if (req.includes(REPLCONFGETBACK)) {
-      console.log("acknow");
+    if (req.includes("getack")) {
       const tempOffset = String(
         byteProcessed - 37 > 0 ? byteProcessed - 37 : 0
       );
