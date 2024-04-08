@@ -103,6 +103,7 @@ if (master !== undefined) {
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
   let ack = 0;
+  let reps = 0;
   let acktimeout: any = undefined;
 
   connection.on("data", async (data: Buffer) => {
@@ -144,26 +145,23 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
     // console.log(parsedReq);
     if (parsedReq.includes("ack")) {
       ack++;
-      // if (ack === 0) {
-      //   clearTimeout(acktimeout);
-      connection.write(`:${ack}\r\n`);
-      //   return;
-      // }
+      console.log(ack);
+      if (ack === reps) {
+        clearTimeout(acktimeout);
+        connection.write(`:${ack}\r\n`);
+        return;
+      }
     }
-    console.log(parsedReq);
 
     if (parsedReq.includes("wait")) {
-      console.log(replicas.length);
+      if (replicas.length === 0) {
+        connection.write(`:${replicas.length}\r\n`);
+      }
+      acktimeout = setTimeout(() => {
+        connection.write(`:${ack}\r\n`);
+      }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
+      reps = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
       forwardToReplicas(REPLCONFGETBACK.toUpperCase());
-      // if (Number(parsedReq[parsedReq.indexOf("wait") + 1]) > 0) {
-
-      //   // ack = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
-      //   acktimeout = setTimeout(() => {
-      //     connection.write(`:${ack}\r\n`);
-      //   }, Number(parsedReq[parsedReq.indexOf("wait") + 2]));
-      //   return;
-      // }
-      connection.write(`:${replicas.length}\r\n`);
     }
 
     if (parsedReq.includes("get")) {
