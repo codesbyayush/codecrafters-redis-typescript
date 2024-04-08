@@ -96,6 +96,7 @@ if (master !== undefined) {
 
 let ack = 0;
 let reps = 0;
+let clearedTimeout = true;
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
   // Handle connection
@@ -146,7 +147,7 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       if (ack >= reps && !sent) {
         sent = true;
         clearTimeout(acktimeout);
-        acktimeout = null;
+        clearedTimeout = true;
         connection.write(`:${reps}\r\n`);
         return;
       }
@@ -160,8 +161,9 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         connection.write(`:${replicas.length}\r\n`);
       }
       reps = Number(parsedReq[parsedReq.indexOf("wait") + 1]);
+      clearedTimeout = false;
       acktimeout = setTimeout(() => {
-        if (acktimeout) {
+        if (!clearedTimeout) {
           connection.write(`:${replicas.length}\r\n`);
           console.log("time ended");
         }
